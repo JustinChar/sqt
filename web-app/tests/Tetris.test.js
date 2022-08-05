@@ -27,21 +27,38 @@ describe("Hold", function () {
         }
     );
 
-    it(
-        `Hold can't be performed twice in a row:
-        Given a Tetris Game where a Hold is performed;
-        When one further Hold is performed;
-        Then the game state before and after the second hold, is the same.`,
-        function () {
-            const initial_game = Tetris.hold(Tetris.new_game());
-            // Implement the rest of this function.
+    it(`Retention cannot be performed twice in a row`, function () {
+        let initial_game = Tetris.new_game()
+        initial_game = Tetris.hold(initial_game);
+        let held_tetromino = JSON.stringify(initial_game.held_tetromino);
+        initial_game = Tetris.hold(initial_game);
+        let held_tetromino1 = JSON.stringify(initial_game.held_tetromino);
+        if (!R.equals(held_tetromino1, held_tetromino)) {
+            throw new Error(
+                `The inital and final tetrominos do not match
+                Initial: ${JSON.stringify(initial_piece)}
+                Final:   ${JSON.stringify(final_piece)}`
+            );
         }
+    }
     );
 
     it(
-        `### Change this to your test description ###`,
+        `If there is no reservation, execute the reservation and deploy the next quadruple deck`,
         function () {
-            // Implement this function.
+            let tinitial_game = Tetris.new_game()
+            let tnext_tetrominos = JSON.stringify(tinitial_game.next_tetromino);
+            tinitial_game.can_hold = '';
+            tinitial_game = Tetris.hold(tinitial_game);
+            let theld_tetrominos = JSON.stringify(tinitial_game.current_tetromino);
+            console.log(theld_tetrominos,tnext_tetrominos)
+            if (theld_tetrominos !== tnext_tetrominos) {
+                throw new Error(
+                    `The inital and final tetrominos do not match
+                    Initial: ${JSON.stringify(theld_tetrominos)}
+                    Final:   ${JSON.stringify(tnext_tetrominos)}`
+                );
+            }
         }
     );
 });

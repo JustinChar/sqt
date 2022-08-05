@@ -5,12 +5,15 @@ const grid_rows = Tetris.field_height;
 
 let game = Tetris.new_game();
 
+let nextDome = document.querySelector('.next .cntent')
+let holdDome = document.querySelector('.hold .cntent')
+console.log(holdDome)
 document.documentElement.style.setProperty("--grid-rows", grid_rows);
 document.documentElement.style.setProperty("--grid-columns", grid_columns);
 
 const grid = document.getElementById("grid");
 
-const range = (n) => Array.from({"length": n}, (ignore, k) => k);
+const range = (n) => Array.from({ "length": n }, (ignore, k) => k);
 
 const cells = range(grid_rows).map(function () {
     const row = document.createElement("div");
@@ -49,6 +52,7 @@ const update_grid = function () {
             }
         }
     );
+    renderElementUi(game)
 };
 
 // Don't allow the player to hold down the rotate key.
@@ -75,11 +79,17 @@ document.body.onkeydown = function (event) {
     if (event.key === " ") {
         game = Tetris.hard_drop(game);
     }
+    if (event.key === 'c') {
+        game = Tetris.hold(game);
+
+    }
     update_grid();
 };
 
 const timer_function = function () {
     game = Tetris.next_turn(game);
+   
+
     update_grid();
     setTimeout(timer_function, 500);
 };
@@ -87,3 +97,66 @@ const timer_function = function () {
 setTimeout(timer_function, 500);
 
 update_grid();
+// 获取元素对象
+
+// 设置渲染函数
+function renderElementUi(game) {
+    let next = game.next_tetromino.grid
+    let hold = game.held_tetromino?.grid;
+    if (next) {
+        let arr = []
+        arr.push([0, 0, 0, 0, 0, 0])
+        nextDome.innerHTML = ``
+        for (let pop of next) {
+            pop = [...pop]
+            pop.unshift(0)
+            if (pop.length < 6) {
+                for (let i = pop.length; i < 6; i++) {
+                    pop.push(0)
+                }
+            }
+            arr.push(pop)
+        }
+        if (arr.length < 7) {
+            arr.push([0, 0, 0, 0, 0, 0])
+        }
+        for (let pop of arr) {
+            let row = document.createElement('div')
+            row.className = 'row'
+            for (let pops of pop) {
+                let cell = document.createElement('div')
+                cell.className = `cell ${pops && pops !== ' ' ? game.next_tetromino.block_type : ''}`
+                row.appendChild(cell)
+            }
+            nextDome.appendChild(row)
+        }
+    }
+    if (hold) {
+        let arr = []
+        arr.push([0, 0, 0, 0, 0, 0])
+        holdDome.innerHTML = ``
+        for (let pop of hold) {
+            pop = [...pop]
+            pop.unshift(0)
+            if (pop.length < 6) {
+                for (let i = pop.length; i < 6; i++) {
+                    pop.push(0)
+                }
+            }
+            arr.push(pop)
+        }
+        if (arr.length < 7) {
+            arr.push([0, 0, 0, 0, 0, 0])
+        }
+        for (let pop of arr) {
+            let row = document.createElement('div')
+            row.className = 'row'
+            for (let pops of pop) {
+                let cell = document.createElement('div')
+                cell.className = `cell ${pops && pops !== ' ' ? game.held_tetromino.block_type : ''}`
+                row.appendChild(cell)
+            }
+            holdDome.appendChild(row)
+        }
+    }
+}
