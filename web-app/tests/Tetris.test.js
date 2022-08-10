@@ -30,14 +30,15 @@ describe("Hold", function () {
     it(`Retention cannot be performed twice in a row`, function () {
         let initial_game = Tetris.new_game()
         initial_game = Tetris.hold(initial_game);
-        let held_tetromino = JSON.stringify(initial_game.held_tetromino);
+        let held_tetromino = R.clone(initial_game.held_tetromino);
         initial_game = Tetris.hold(initial_game);
-        let held_tetromino1 = JSON.stringify(initial_game.held_tetromino);
-        if (!R.equals(held_tetromino1, held_tetromino)) {
+        let held_tetromino1 = R.clone(initial_game.held_tetromino);
+        // let flg = R.equals(held_tetromino1.block_type, held_tetromino.block_type)
+        if (R.equals(held_tetromino1.block_type, held_tetromino.block_type)) {
             throw new Error(
                 `The inital and final tetrominos do not match
-                Initial: ${JSON.stringify(initial_piece)}
-                Final:   ${JSON.stringify(final_piece)}`
+                Initial: ${JSON.stringify(held_tetromino1)}
+                Final:   ${JSON.stringify(held_tetromino)}`
             );
         }
     }
@@ -47,12 +48,11 @@ describe("Hold", function () {
         `If there is no reservation, execute the reservation and deploy the next quadruple deck`,
         function () {
             let tinitial_game = Tetris.new_game()
-            let tnext_tetrominos = JSON.stringify(tinitial_game.next_tetromino);
+            let tnext_tetrominos = R.clone(tinitial_game.next_tetromino);
             tinitial_game.can_hold = '';
             tinitial_game = Tetris.hold(tinitial_game);
-            let theld_tetrominos = JSON.stringify(tinitial_game.current_tetromino);
-            console.log(theld_tetrominos,tnext_tetrominos)
-            if (theld_tetrominos !== tnext_tetrominos) {
+            let theld_tetrominos = R.clone(tinitial_game.current_tetromino);
+            if (!R.equals(theld_tetrominos.block_type, tnext_tetrominos.block_type)) {
                 throw new Error(
                     `The inital and final tetrominos do not match
                     Initial: ${JSON.stringify(theld_tetrominos)}

@@ -230,8 +230,8 @@ const all_tetrominos = [
     Tetris.Z_tetromino
 ];
 
-let held_tetromino = null;
-let can_hold = false;
+// let held_tetromino = null;
+// let can_hold = false;
 /**
  * The height of a tetris field.
  * Includes buffer rows at the top that may not be visible.
@@ -302,8 +302,8 @@ Tetris.new_game = function () {
 
     return {
         "bag": bag,
-        can_hold,
-        held_tetromino,
+        can_hold: null,
+        held_tetromino: null,
         "current_tetromino": current_tetromino,
         "field": new_field(),
         "game_over": false,
@@ -590,7 +590,7 @@ Tetris.next_turn = function (game) {
     const cleared_field = clear_lines(locked_field);
 
     const [next_tetromino, bag] = game.bag();
-    can_hold = false;
+    game.can_hold = false;
     return {
         "bag": bag,
         "current_tetromino": game.next_tetromino,
@@ -599,8 +599,8 @@ Tetris.next_turn = function (game) {
         "next_tetromino": next_tetromino,
         "position": starting_position,
         "score": game.score,
-        can_hold,
-        held_tetromino,
+        can_hold: game.can_hold,
+        held_tetromino: game.held_tetromino,
     };
 };
 
@@ -620,7 +620,7 @@ Tetris.hold = function (game) {
     }
     if (game.held_tetromino) {
         let temp = game.current_tetromino;
-        game.current_tetromino = held_tetromino;
+        game.current_tetromino =  game.held_tetromino ;
         game.held_tetromino = temp;
     } else {
         game.held_tetromino = game.current_tetromino;
@@ -628,13 +628,11 @@ Tetris.hold = function (game) {
         const [next_tetromino, bag] = game.bag();
         game.next_tetromino = next_tetromino;
     }
-    can_hold =true;
-    held_tetromino = game.held_tetromino
     game.position = [5, 0];
     return {
         ...game,
-        can_hold,
-        held_tetromino
+        can_hold: game.can_hold,
+        held_tetromino: game.held_tetromino
     };
 }
 
