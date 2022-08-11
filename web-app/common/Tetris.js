@@ -590,7 +590,6 @@ Tetris.next_turn = function (game) {
     const cleared_field = clear_lines(locked_field);
 
     const [next_tetromino, bag] = game.bag();
-    game.can_hold = true;
     return {
         "bag": bag,
         "current_tetromino": game.next_tetromino,
@@ -599,7 +598,7 @@ Tetris.next_turn = function (game) {
         "next_tetromino": next_tetromino,
         "position": starting_position,
         "score": game.score,
-        "can_hold": game.can_hold,
+        "can_hold": true,
         "held_tetromino": game.held_tetromino,
     };
 };
@@ -615,6 +614,7 @@ Tetris.is_game_over = function (game) {
 };
 
 Tetris.hold = function (game) {
+    game = R.clone(game);
     if (!game.can_hold) {
         return game;
     } else {
