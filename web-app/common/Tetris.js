@@ -1,3 +1,4 @@
+
 import R from "./ramda.js";
 /**
  * @namespace Tetris
@@ -9,8 +10,7 @@ const Tetris = Object.create(null);
 
 //----------------------------------------------------------------------------//
 // ## Type Definitions                                                        //
-//----------------------------------------------------------------------------//
-
+//----------------------------------------------------------------------------//SSS
 
 /**
  * A Tetris Game is all the information required to represent the current state
@@ -590,7 +590,7 @@ Tetris.next_turn = function (game) {
     const cleared_field = clear_lines(locked_field);
 
     const [next_tetromino, bag] = game.bag();
-    game.can_hold = false;
+    game.can_hold = true;
     return {
         "bag": bag,
         "current_tetromino": game.next_tetromino,
@@ -599,8 +599,8 @@ Tetris.next_turn = function (game) {
         "next_tetromino": next_tetromino,
         "position": starting_position,
         "score": game.score,
-        can_hold: game.can_hold,
-        held_tetromino: game.held_tetromino,
+        "can_hold": game.can_hold,
+        "held_tetromino": game.held_tetromino,
     };
 };
 
@@ -615,20 +615,22 @@ Tetris.is_game_over = function (game) {
 };
 
 Tetris.hold = function (game) {
-    if (game.can_hold) {
+    if (!game.can_hold) {
         return game;
-    }
-    if (game.held_tetromino) {
-        let temp = game.current_tetromino;
-        game.current_tetromino =  game.held_tetromino ;
-        game.held_tetromino = temp;
     } else {
-        game.held_tetromino = game.current_tetromino;
-        game.current_tetromino = game.next_tetromino;
-        const [next_tetromino, bag] = game.bag();
-        game.next_tetromino = next_tetromino;
+        if (game.held_tetromino) {
+            let temp = game.current_tetromino;
+            game.current_tetromino =  game.held_tetromino ;
+            game.held_tetromino = temp;
+        } else {
+            game.held_tetromino = game.current_tetromino;
+            game.current_tetromino = game.next_tetromino;
+            const [next_tetromino, bag] = game.bag();
+            game.next_tetromino = next_tetromino;
+        }
     }
     game.position = [5, 0];
+    game.can_hold = false;
     return {
         ...game,
         can_hold: game.can_hold,
